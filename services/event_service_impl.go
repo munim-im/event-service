@@ -9,6 +9,7 @@ import (
 )
 
 type eventService struct {
+	services.EventService
 	eventRepo repository.EventRepository
 }
 

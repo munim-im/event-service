@@ -9,6 +9,7 @@ import (
 )
 
 type eventFilter struct {
+	filters.EventFilter
 	repo repository.EventRepository
 	db *gorm.DB
 }

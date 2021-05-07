@@ -9,6 +9,7 @@ import (
 )
 
 type eventController struct {
+	controllers.EventController
 	eventService services.EventService
 }
 

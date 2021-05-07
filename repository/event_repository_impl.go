@@ -7,6 +7,7 @@ import (
 )
 
 type eventRepository struct {
+	repository.EventRepository
 	db *gorm.DB
 }
 
