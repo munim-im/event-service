@@ -9,6 +9,12 @@
 - [Separation of concern](#separation-of-concern)
 - [Business Logic Implementation](#business-logic-implementation)
 - [Future business Logic Implementation](#future-business-logic-implementation)
+- [Testing Strategy](#testing-strategy)
+- [Handling high volume traffic](#handing-high-volume-traffic)
+- [Data writing strategy](#data-writing-strategy)
+
+## TL;DR
+This documentation is a bit long. Please have patience! 
 
 <a name="folder-structure"></a>
 ### Folder Structure
@@ -210,3 +216,51 @@ In this we will be forming our query part by part based on the query params supp
 One more thing, if we need to remove or add new params to our filters we need to include the function into our interface and implement to our filter instance.
 
 The data fetch remains the same which again aligns with our `Open Closed Principle`. Our filter remain open to incorporate new things and closed to change frequently.
+
+<a name="testing-strategy"></a>
+### Testing Strategy
+
+For testing, I would definitely start with the `unit testing` of different components. Once most of the units are covered, I would move on to the component testing. After finishing all of this I would implement black box testing that would handle mocking http requests to the controllers.
+
+For testing,  we would have a great flexibility as most of the modules are kept open in terms of implementation.  So you can initialize and fetch it from most of the places. We also added `Dependency Injection` wherever possible, making it easier for us abstracting different algorithms from the implementation.
+
+Our interface based approach would allow to mock different instances easier, making the whole testing experience flawless.
+
+<a name="handling-high-volume-traffic"></a>
+### Handing high volume traffic
+
+In the documentation we saw there might be 100 requests per second to this service. Just looking at the number only is not enough whether to use any streaming services, cloud publisher/subscriber services.
+
+If the confirmation of the requests is necessary to the user, then moving from the REST would not seem appealing. Rather we should move to gRPC which consumes less bandwidth and faster than REST.
+
+But all of the above are just speculation and mostly on theory. For the successful implementation of this kind of architecture require close monitoring of the system mentioning load and expectation from the system.
+
+<a name="data-writing-strategy"></a>
+### Data writing strategy
+
+Seeing the data and api request pattern, it seems to me this is a write heavy logging service meaning the write operation would be higher than the read operation for sure. ( I might be wrong coz I have only two api's in here, one for creation and one for filtering).
+
+For the sake of discussion it's a logging service.
+
+In that case the implementation of cache would not be wise as the data access pattern by users would be probably different. And most of them would filter by different permutations of the query params. So I would not be implementing cache just now.
+
+Also as the logging service, the data in the database would be huge. The data access would be slow if we don't introduce db column index. In this application we have thought about it but didn't implement the index write away as it has adverse effect on writing to the database. Because the more index you introduced to the server the write operation would be slow. And on top that we are talking about high traffic scenario.
+
+In this case I would opt out of setting up read/write replica database in the application. We can have multiple replicas which would handle the read request and a pool of sources which would handle the write operations.
+
+In case of our applications we can setup the configuration easily using the `dbresolver` package provided by `gorm`
+
+```go
+source1 := getDBConfigDynamicName("event-service-source-1")  
+replicas1 := getDBConfigDynamicName("event-service-replica-1")  
+replicas2 := getDBConfigDynamicName("event-service-replica-2")  
+db.Use(dbresolver.Register(dbresolver.Config{  
+ Sources:  []gorm.Dialector{postgres.Open(*source1.GetDSNString()), postgres.Open(dsnString)}, Replicas: []gorm.Dialector{postgres.Open(*replicas1.GetDSNString()), postgres.Open(*replicas2.GetDSNString())}, Policy:   dbresolver.RandomPolicy{},}))
+```
+
+In the above snippet we have shown how you can setup two sources and two replicas in the read/write database which has a random access policy in terms of choosing a database.
+
+
+I have tried my best to explain different scenarios that came into my mind.
+
+Happy Coding!!
