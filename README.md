@@ -1,15 +1,51 @@
 # Event Service
 
-## Steps taken
-* Initialize go modules using `go mod init event-service`.
-* Initialize git at the very first so that we can use the VCS.
-* Install `gin` package for http web framework.
-* Install `gorm` for ORM and install gorm postgres driver as we will be using postgresql as database.
+
+### Application Architecture
 ```shell
-go get -u github.com/gin-gonic/gin
-go get -u gorm.io/gorm
-go get -u gorm.io/driver/postgres 
+.
+├── Dockerfile
+├── README.md
+├── api
+│   └── v1
+│       ├── controllers
+│       └── routes.go
+├── app
+│   ├── app.go
+│   └── routes.go
+├── config
+│   └── date_format.go
+├── db
+│   └── postgres.go
+├── dto
+│   ├── db.go
+│   ├── errors.go
+│   └── event.go
+├── filters
+│   └── event_filter_impl.go
+├── go.mod
+├── go.sum
+├── interfaces
+│   ├── controllers
+│   │   └── event_controller_interface.go
+│   ├── db
+│   │   └── db_interface.go
+│   ├── filters
+│   │   └── event.go
+│   ├── models
+│   │   └── models.go
+│   ├── repository
+│   │   └── event_repository_interface.go
+│   └── services
+│       └── event_service_interface.go
+├── main.go
+├── models
+│   └── event.go
+├── repository
+│   └── event_repository_impl.go
+├── services
+│   └── event_service_impl.go
+└── utils
+    ├── hash_utils.go
+    └── os_utils.go
 ```
-* Start with the data model designing as that is the core part of service. I like to put all the models in a 
-single folder if number of models are few in number. If we require more models, then I try to keep them in folders so that
-I can see all the models with their related and supported models too.  

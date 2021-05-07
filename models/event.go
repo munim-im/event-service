@@ -11,7 +11,7 @@ import (
 )
 
 type Event struct {
-	models.IdGenerator `gorm:"-"`
+	models.IdGenerator `gorm:"-" json:"-"`
 	ID                 string         `json:"id" gorm:"primaryKey;index;unique;not null;type:varchar(50)"`
 	Email              string         `json:"email" gorm:"type:varchar(100);not null"`
 	Environment        string         `json:"environment" gorm:"not null;type:varchar(200)"`

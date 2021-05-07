@@ -21,4 +21,5 @@ require (
 	gorm.io/datatypes v1.0.1 // indirect
 	gorm.io/driver/postgres v1.1.0 // indirect
 	gorm.io/gorm v1.21.9 // indirect
+	gorm.io/plugin/dbresolver v1.1.0 // indirect
 )
