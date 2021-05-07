@@ -6,6 +6,8 @@
 - [Description](#description)
 - [Application Block diagram](#diagram)
 - [ID Generation Strategy](#id-generation-strategy)
+- [Separation of concern](#separation-of-concern)
+- [Business Login Implementation](#business-logic-implementation)
 
 <a name="folder-structure"></a>
 ### Folder Structure
@@ -150,3 +152,60 @@ func (e *Event) GenerateId() *string {
    return &id  
 }
 ```
+<a name="separation-of-concern"></a>
+### Separation of concern
+From the very beginning of the development, the care for `Separation of Concern` was an important one. That's why files are kept in modular fashion, compact and small so that the first `S` of `SOLID` can be followed.
+
+That's why we broke our application into the following pieces:
+* Controllers - Take care only receiving requests from clients.
+* Services - Handles all the business logic.
+* Repository - Controls the data access from database.
+* Models - Defines the data of our system.
+* DTO - Defines the input and output format and ensures the validation of those.
+* Config - Handles general configuration
+* DB - Configurations of the databases
+* Utils - Handles the utility and helper functions of the application.
+
+Foremost concern was to make the application such that each component does its duty in full without thinking of handling so many things on it's own.
+
+
+<a name="business-logic-location"></a>
+### Business Logic Implementation
+
+Most of the business logics are implemented through service. All the services have definite interfaces those are implemented into the instances of the service.
+
+Here we tried to follow `O` of the `SOLID`. The famous `Open closed principle` meaning our services are open to inclusion to different new features but closed in nature in terms of changing the previous one unless it's a big one.
+
+We want our controllers just to handle the validation of the incoming data and pass it to proper service implementation. Service will take care of the rest by invoking different repository call which returns actual data from the databases
+ 
+<a name="future-business-logic"></a>
+### Future business logic
+
+Future business logics are also implemented through services. This would only require change in only layer keeping rest of the architecture intact and unchanged.
+
+So any kind of inclusion of the bugs would be easier to find and fix.
+
+One thing we have done in this project is taking out the part of services into another supporting modules for filtering the events. Because the parameters of the filtering could be diversified and change frequently. For this reason in we use a `Builder` design pattern for our `EventFilter`. The interface of the `EventFilter` is as follows:
+
+```go
+package filters  
+  
+import (  
+   "event-service/models"  
+)  
+  
+type EventFilter interface {  
+   Get() []models.Event  
+   Since(date *string) EventFilter  
+   Author(email *string) EventFilter  
+   OfComponent(component *string) EventFilter  
+   InEnvironment(environment *string) EventFilter  
+   WithMessage(message *string) EventFilter  
+}
+```
+
+In this we will be forming our query part by part based on the query params supplies from the client. We will only hit the database when `Get()` method will be called. This will ensure one time ht to the database rather than multiple time hit to database for filtering with different params.
+
+One more thing, if we need to remove or add new params to our filters we need to include the function into our interface and implement to our filter instance.
+
+The data fetch remains the same which again aligns with our `Open Closed Principle`. Our filter remain open to incorporate new things and closed to change frequently.
