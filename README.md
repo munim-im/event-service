@@ -5,6 +5,7 @@
 - [Folder Structure](#folder-structure)
 - [Description](#description)
 - [Application Block diagram](#diagram)
+- [ID Generation Strategy](#id-generation-strategy)
 
 <a name="folder-structure"></a>
 ### Folder Structure
@@ -114,3 +115,37 @@ graph LR
 
 * `Dockerfile` contains the instruction for building an image from this application.
 
+<a name="id-generation"></a>
+### ID Generation Strategy
+
+`ID` has been one of the most common way for developers to communicate. Like
+`Hey, can you see what wrong with order #123?`
+
+So for me, `ID` should be very expressive in nature not just an random string or `UUID`. It should be small but enough to have some heads-up on those information.
+
+In this application have thought of the `ID` format like this
+```
+First 3 chars of env-first 3 chars of component - YYYYMMDDHHmmss-hash id with nanosecond of creation timestamp
+```
+Let's say we are creating an event of `production` environment coming from `orders` component at May 05, 2021 at 3:45pm 54 secs. The ID of it would be something similar to
+```
+pro-ord-20210505144554-(random-hash)
+```
+The `id` remains very expressive.  By looking at I can easily say that this might happen around this time with this and this params. Otherwise every dev would copy the long id and query the db then get the information and analyze.
+
+
+**So what's with the random-hash part?**
+
+One of leading question was how to handle system with hundreds of activity coming to the service. If we remove the `random-hash` part we could easily handle one event entry per second and that would suffice. But adding 100 or more in one second is tricky. So I thought of hashing the `nanosecond` part of it using `hashid` package from go to generate a small random string which ensures the uniqueness of the our event entry. On top of that, we can have unique hash for more than `10^9` possible scenarios.
+
+**Code for generating the ID**
+```go
+func (e *Event) GenerateId() *string {  
+   environment := strings.ToLower(e.Environment)[:3]  
+   component := strings.ToLower(e.Component)[:3]  
+   currentTime := time.Now()  
+   timestamp := currentTime.Format(config.TIMESTAMP_FORMAT_ID)  
+   id := strings.Join([]string{environment, component, timestamp, utils.GenerateHash(currentTime.Nanosecond(), 3)}, "-")  
+   return &id  
+}
+```
