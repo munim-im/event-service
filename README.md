@@ -7,7 +7,8 @@
 - [Application Block diagram](#diagram)
 - [ID Generation Strategy](#id-generation-strategy)
 - [Separation of concern](#separation-of-concern)
-- [Business Login Implementation](#business-logic-implementation)
+- [Business Logic Implementation](#business-logic-implementation)
+- [Future business Logic Implementation](#future-business-logic-implementation)
 
 <a name="folder-structure"></a>
 ### Folder Structure
@@ -179,7 +180,7 @@ Here we tried to follow `O` of the `SOLID`. The famous `Open closed principle` m
 We want our controllers just to handle the validation of the incoming data and pass it to proper service implementation. Service will take care of the rest by invoking different repository call which returns actual data from the databases
  
 <a name="future-business-logic"></a>
-### Future business logic
+### Future business logic implementation
 
 Future business logics are also implemented through services. This would only require change in only layer keeping rest of the architecture intact and unchanged.
 
