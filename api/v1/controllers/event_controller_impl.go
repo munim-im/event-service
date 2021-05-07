@@ -34,7 +34,18 @@ func (e *eventController) CreateEvent(c *gin.Context) {
 }
 
 func (e *eventController) RetrieveEvent(c *gin.Context) {
+	var query dto.EventFilterParams
+	err := c.ShouldBindQuery(&query)
 
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorResponse{
+			Message: err.Error(),
+			Code:    http.StatusBadRequest,
+		})
+		return
+	}
+	events := e.eventService.FilterEvents(query)
+	c.JSON(http.StatusOK, events)
 }
 
 func GetEventControllerV1(service services.EventService) controllers.EventController{

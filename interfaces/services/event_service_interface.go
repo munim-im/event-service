@@ -7,4 +7,5 @@ import (
 
 type EventService interface {
 	CreateEvent(params dto.EventCreateParams) (*models.Event, error)
+	FilterEvents(params dto.EventFilterParams) []models.Event
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 )
 
@@ -44,7 +45,9 @@ func getDBConfig() *PostgresConfig {
 func GetPostgresConnection() *gorm.DB {
 	config := getDBConfig()
 	dsnString := *config.GetDSNString()
-	db, err := gorm.Open(postgres.Open(dsnString), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsnString), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		panic("Error in connecting the database")
 	}
