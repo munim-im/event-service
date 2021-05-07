@@ -119,6 +119,7 @@ graph LR
 ### ID Generation Strategy
 
 `ID` has been one of the most common way for developers to communicate. Like
+
 `Hey, can you see what wrong with order #123?`
 
 So for me, `ID` should be very expressive in nature not just an random string or `UUID`. It should be small but enough to have some heads-up on those information.
