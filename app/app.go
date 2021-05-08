@@ -6,7 +6,6 @@ import (
 )
 
 func StartApp() {
-	// explanation why the injection working
 	// configure db connection in here
 	dbConfig := db.GetPostgresConnection()
 	dbInstance, _ := dbConfig.DB()
@@ -14,6 +13,8 @@ func StartApp() {
 
 	// initialize the routers
 	r := gin.Default()
+	// configure application routes
 	r = ConfigureAppRoutes(r, dbConfig)
+	// run the servers
 	r.Run()
 }

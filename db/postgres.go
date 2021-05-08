@@ -11,10 +11,12 @@ import (
 	"log"
 )
 
+// PostgresConfig - struct for storing postgres db config. dto.DBConfig embedded to have all the common features.
 type PostgresConfig struct {
 	dto.DBConfig
 }
 
+// GetDSNString - get the DSN string for db connection
 func (r *PostgresConfig) GetDSNString() *string {
 	dsn := fmt.Sprintf(
 		"host=%v user=%v password=%v dbname=%v port=%v sslmode=disable TimeZone=%v",
@@ -92,7 +94,6 @@ func GetPostgresConnection() *gorm.DB {
 
 	// run the migrations in here
 	// right now using the gorm default one. For scaling would use gormigrate or golang-migrate/migrate packages
-
 	db.AutoMigrate(&models.Event{})
 	return db
 }

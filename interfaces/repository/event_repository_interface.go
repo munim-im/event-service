@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// repository interface for general query
 type EventRepository interface {
 	GetDB() *gorm.DB
 	CreateEvent(event *models.Event) (*models.Event, error)

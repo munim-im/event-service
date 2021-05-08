@@ -4,6 +4,7 @@ import (
 	"event-service/models"
 )
 
+// interface for event filter
 type EventFilter interface {
 	Get() []models.Event
 	Since(date *string) EventFilter

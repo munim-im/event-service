@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 )
-
+// Event - database model for event
 type Event struct {
 	models.IdGenerator `gorm:"-" json:"-"`
 	ID                 string         `json:"id" gorm:"primaryKey;index;unique;not null;type:varchar(50)"`
@@ -23,7 +23,7 @@ type Event struct {
 	UpdatedAt          time.Time      `json:"updated_at" gorm:"not null"`
 }
 
-// using hooks to setup the created time and edited time
+// id generator override
 func (e *Event) GenerateId() *string {
 	environment := strings.ToLower(e.Environment)[:3]
 	component := strings.ToLower(e.Component)[:3]
@@ -32,7 +32,7 @@ func (e *Event) GenerateId() *string {
 	id := strings.Join([]string{environment, component, timestamp, utils.GenerateHash(currentTime.Nanosecond(), 3)}, "-")
 	return &id
 }
-
+// using hooks to setup the created time and edited time
 func (u *Event) BeforeCreate(tx *gorm.DB) (err error) {
 	u.ID = *u.GenerateId()
 
@@ -46,7 +46,7 @@ func (u *Event) BeforeCreate(tx *gorm.DB) (err error) {
 
 	return
 }
-
+// before save hook
 func (u *Event) BeforeSave(tx *gorm.DB) (err error) {
 	u.UpdatedAt = time.Now()
 	return

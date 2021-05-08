@@ -2,6 +2,7 @@ package dto
 
 import "gorm.io/datatypes"
 
+// EventCreateParams - input params for event create post request
 type EventCreateParams struct {
 	Email       string         `json:"email" binding:"required,email"`
 	Environment string         `json:"environment" binding:"required"`
@@ -10,6 +11,7 @@ type EventCreateParams struct {
 	Data        datatypes.JSON `json:"data"`
 }
 
+// EventFilterParams - holder for filter query params
 type EventFilterParams struct {
 	Email       string `form:"email"`
 	Environment string `form:"environment"`

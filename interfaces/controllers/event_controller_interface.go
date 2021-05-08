@@ -2,8 +2,7 @@ package controllers
 
 import "github.com/gin-gonic/gin"
 
-// explain why we keep it centralized
-
+// interface for event controller
 type EventController interface {
 	CreateEvent(c *gin.Context)
 	RetrieveEvent(c *gin.Context)

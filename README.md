@@ -211,7 +211,7 @@ type EventFilter interface {
 }
 ```
 
-In this we will be forming our query part by part based on the query params supplies from the client. We will only hit the database when `Get()` method will be called. This will ensure one time ht to the database rather than multiple time hit to database for filtering with different params.
+In this we will be forming our query part by part based on the query params supplies from the client. We will only hit the database when `Get()` method will be called. This will ensure one time hit to the database rather than multiple time hit to database for filtering with different params.
 
 One more thing, if we need to remove or add new params to our filters we need to include the function into our interface and implement to our filter instance.
 
