@@ -4,6 +4,8 @@
 
 - [Folder Structure](#folder-structure)
 - [Description](#description)
+  - [Web server description](#gin)
+  - [gRPC server description](#grpc)
 - [Application Block diagram](#diagram)
 - [ID Generation Strategy](#id-generation-strategy)
 - [Separation of concern](#separation-of-concern)
@@ -120,7 +122,8 @@ graph LR
   end
   controller -- 5. Return response data --> client
 ```
-
+<a name="gin"></a>
+### Web server description
 * In `app/routes.go` we see function `ConfigureAppRoutes` collects all the subgroup of api routes from different module and return a `*gin.Engine` object to run the server.
 
 * As we know it's very trivial to introduce versioning in the REST api format. So we have introduced versioning for controller and routes. The `v1` route for this event service is coming from `api/v1/routes.go`.
@@ -143,6 +146,19 @@ graph LR
 
 * `Dockerfile` contains the instruction for building an image from this application.
 
+<a name="grpc"></a>
+### gRPC server description
+* First, we have declared all our messages and rpc service contract inside `proto/` folder.
+* We used `protoc` for our code generation. All the codes generated from `proto/` folder are inside `pb/` folder.
+* In `server/` folder, we kept all the services server side implementation. In `server/event.go` we have implemented the methods we declared in `proto/event_service.proto`.
+* As all the services, repositories were implemented at the first stage of implementing the webserver, we just reused those. 
+* We mocked our requests by implementing a separate [event-service-grpc-client](https://github.com/nashmaniac/event-service-grpc-client). Those codes are already uploaded in a separate git repo.
+* For creating the event: 
+  * We have written a validation functions inside `utils/validation_utils.go` to validate our incoming input data coming through gRPC request.
+  * We have added a function named `ConvertToMessage` to our `models/event.go` file so that we can directly convert our db model to protobuf message.
+* For filtering the event:
+  * We reused our earlier event filter we built and passing the value params to filter instance.
+  
 <a name="id-generation"></a>
 ### ID Generation Strategy
 
