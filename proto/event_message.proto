@@ -6,27 +6,32 @@ option go_package = "/pb";
 
 import "google/protobuf/struct.proto";
 
+
+// EventInputParams - input message for creating event
 message EventInputParams {
     string email = 1;
     string environment = 2;
     string component = 3;
     string message_string  = 4;
-    google.protobuf.Struct data = 5;
+    google.protobuf.Struct data = 5; // arbitrary json data holder
 }
 
+// EventResponse - response message for a single event.
 message EventResponse {
     string id = 1;
     string email = 2;
     string environment = 3;
     string component = 4;
     string message_string  = 5;
-    google.protobuf.Struct data = 6;
+    google.protobuf.Struct data = 6; // arbitrary json data holder
 }
 
+// EventFilterInput - query params holder for filtering
 message EventFilterInput {
     map<string, string> params = 1;
 }
 
+// EventFilterResponse - response with multiple events after filtering.
 message EventFilterResponse {
     repeated EventResponse events = 1;
 }

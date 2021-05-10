@@ -4,7 +4,7 @@ import (
 	"event-service/pb"
 	"fmt"
 )
-
+// ValidateEventInput - input validation for event
 func ValidateEventInput(input *pb.EventInputParams) error {
 	if input.Environment == "" {
 		return fmt.Errorf("Environement should not be empty")

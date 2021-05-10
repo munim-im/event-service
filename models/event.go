@@ -55,6 +55,7 @@ func (u *Event) BeforeSave(tx *gorm.DB) (err error) {
 	return
 }
 
+// ConvertToMessage  - for conversion to the EventResponse protobuf message
 func (e Event) ConvertToMessage() *pb.EventResponse {
 	bytes, _ := e.Data.MarshalJSON()
 	var p map[string]interface{};

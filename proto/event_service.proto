@@ -3,7 +3,10 @@ package event_service;
 import "proto/event_message.proto";
 option go_package = "/pb";
 
+// Event service definition
 service Event {
+    // rpc definition for createEvent
     rpc createEvent(EventInputParams) returns (EventResponse);
+    // rpc definition for filterEvent
     rpc filterEvents(EventFilterInput) returns (EventFilterResponse);
 }

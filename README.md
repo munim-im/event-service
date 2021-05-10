@@ -88,7 +88,7 @@ So some of the best practices might be missing for gRPC. We will add those impro
 
 * In `app/app.go` we have two implementation 
   * `setupGinServer()` - start up the gin server
-  *  `setUpGRPCServer()` - start up the grpc server
+  * `setUpGRPCServer()` - start up the grpc server
   * in function `StartApp()` - we only call one of these to boot our expected service. 
   * In both the setup server functions, we did the following:
     * First,  we setup the database connectivity. I do it centrally otherwise everytime 
