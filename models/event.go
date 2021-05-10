@@ -1,9 +1,12 @@
 package models
 
 import (
+	"encoding/json"
 	"event-service/config"
 	"event-service/interfaces/models"
+	"event-service/pb"
 	"event-service/utils"
+	"google.golang.org/protobuf/types/known/structpb"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"strings"
@@ -50,4 +53,20 @@ func (u *Event) BeforeCreate(tx *gorm.DB) (err error) {
 func (u *Event) BeforeSave(tx *gorm.DB) (err error) {
 	u.UpdatedAt = time.Now()
 	return
+}
+
+func (e Event) ConvertToMessage() *pb.EventResponse {
+	bytes, _ := e.Data.MarshalJSON()
+	var p map[string]interface{};
+	_ = json.Unmarshal(bytes, &p)
+	jsonValue, _ := structpb.NewStruct(p)
+
+	return &pb.EventResponse{
+		Id:            e.ID,
+		Email:         e.Email,
+		Environment:   e.Environment,
+		Component:     e.Component,
+		MessageString: e.Message,
+		Data:          jsonValue,
+	}
 }
