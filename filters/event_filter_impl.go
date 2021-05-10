@@ -30,7 +30,7 @@ func (e *eventFilter) Since(date *string) filters.EventFilter {
 func (e *eventFilter) Author(email *string) filters.EventFilter {
 	// dynamic query formation of email
 	if email != nil && *email != "" {
-		e.db = e.db.Where("email = ?", *email)
+		e.db = e.db.Where("email ilike ?", *email)
 	}
 	return e
 }
@@ -39,7 +39,7 @@ func (e *eventFilter) Author(email *string) filters.EventFilter {
 func (e *eventFilter) OfComponent(component *string) filters.EventFilter {
 	// dynamic query formation of component
 	if component != nil && *component != "" {
-		e.db = e.db.Where("component = ?", *component)
+		e.db = e.db.Where("component ilike ?", *component)
 	}
 	return e
 }
@@ -48,7 +48,7 @@ func (e *eventFilter) OfComponent(component *string) filters.EventFilter {
 func (e *eventFilter) InEnvironment(environment *string) filters.EventFilter {
 	// dynamic query formation of environment
 	if environment != nil && *environment != "" {
-		e.db = e.db.Where("environment = ?", *environment)
+		e.db = e.db.Where("environment ilike ?", *environment)
 	}
 	return e
 }

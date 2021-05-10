@@ -28,8 +28,14 @@ type Event struct {
 
 // id generator override
 func (e *Event) GenerateId() *string {
-	environment := strings.ToLower(e.Environment)[:3]
-	component := strings.ToLower(e.Component)[:3]
+	environment := strings.ToLower(e.Environment)
+	if len(environment) > 3 {
+		environment = environment[:3]
+	}
+	component := strings.ToLower(e.Component)
+	if len(component) > 3 {
+		component = component[:3]
+	}
 	currentTime := time.Now()
 	timestamp := currentTime.Format(config.TIMESTAMP_FORMAT_ID)
 	id := strings.Join([]string{environment, component, timestamp, utils.GenerateHash(currentTime.Nanosecond(), 3)}, "-")
