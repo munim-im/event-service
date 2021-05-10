@@ -53,6 +53,20 @@ func (e *eventServer) FilterEvents(ctx context.Context, input *pb.EventFilterInp
 	if val, ok := input.Params["component"]; ok {
 		eventFilter = eventFilter.OfComponent(&val)
 	}
+	if val, ok := input.Params["email"]; ok {
+		eventFilter = eventFilter.Author(&val)
+	}
+	if val, ok := input.Params["environment"]; ok {
+		eventFilter = eventFilter.InEnvironment(&val)
+	}
+	if val, ok := input.Params["message"]; ok {
+		eventFilter = eventFilter.WithMessage(&val)
+	}
+	if val, ok := input.Params["from"]; ok {
+		eventFilter = eventFilter.Since(&val)
+	}
+
+
 
 	events := eventFilter.Get()
 	eventsMap := make([]*pb.EventResponse, len(events))
