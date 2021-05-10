@@ -85,21 +85,21 @@ The whole application follows the clean code architecture. The block diagram is 
 
 ```mermaid
 graph LR
-	client[Client]
-	client -- 1. Send Request --> controller
-	subgraph Application
-		controller[Controller]
-		service[Service]
-		repository[Repository]
-		database[(Persistance Storage)]
-		controller -- 2. Maps URLs to individual service --> service
-		service -- 3. Act on business logic --> repository
-		repository -- 4. Fetch object from db --> database
-		database --> repository
-		repository --> service
-		service --> controller
-	end
-	controller -- 5. Return response data --> client
+  client[Client]
+  client -- 1. Send Request --> controller
+  subgraph Application
+      controller[Controller]
+      service[Service]
+      repository[Repository]
+      database[(Persistance Storage)]
+      controller -- 2. Maps URLs to individual service --> service
+      service -- 3. Act on business logic --> repository
+      repository -- 4. Fetch object from db --> database
+      database --> repository
+      repository --> service
+      service --> controller
+  end
+  controller -- 5. Return response data --> client
 ```
 
 * In `app/routes.go` we see function `ConfigureAppRoutes` collects all the subgroup of api routes from different module and return a `*gin.Engine` object to run the server.
