@@ -16,11 +16,15 @@
 ## TL;DR
 This documentation is a bit long. Please have patience! 
 
+Please also note that we have implemented gRPC after the application is already designed with GIN web framework. 
+So some of the best practices might be missing for gRPC. We will add those improvements in due time.  
+
 <a name="folder-structure"></a>
 ### Folder Structure
 ```shell
 .
 ├── Dockerfile
+├── Makefile
 ├── README.md
 ├── api
 │   └── v1
@@ -57,13 +61,22 @@ This documentation is a bit long. Please have patience!
 ├── main.go
 ├── models
 │   └── event.go
+├── pb
+│   ├── event_message.pb.go
+│   └── event_service.pb.go
+├── proto
+│   ├── event_message.proto
+│   └── event_service.proto
 ├── repository
 │   └── event_repository_impl.go
+├── server
+│   └── event.go
 ├── services
 │   └── event_service_impl.go
 └── utils
     ├── hash_utils.go
-    └── os_utils.go
+    ├── os_utils.go
+    └── validation_utils.go
 ```
 
 <a name="description"></a>
@@ -71,10 +84,16 @@ This documentation is a bit long. Please have patience!
 
 * This service starts from `main.go`. Generally I try to keep this file short. I actually calls a function `app.StartApp()` which takes care of the configurations and setting up application routes.
 
-* In `app/app.go` in function `StartApp()` first we setup the database connectivity. I do it centrally otherwise everytime 
+* In `app/app.go` we have two implementation 
+  * `setupGinServer()` - start up the gin server
+  *  `setUpGRPCServer()` - start up the grpc server
+  * in function `StartApp()` - we only call one of these to boot our expected service. 
+  * In both the setup server functions, we did the following:
+    * First,  we setup the database connectivity. I do it centrally otherwise everytime 
   I need to setup a repository connection multiple connection would start. In keeping this centralized gives me the ability to shut down the connection gracefully when the application exits.
+    * Setting up the route initialization for the `GIN` and for grpc, we register our service to the grpc server.
 
-* In the later part of `app.StartApp()` we setup the application routes. I love modularizing codes so I keep all this configs 
+* I love modularizing codes so I keep all this configs 
 separately to every file so that my application follows `Single Responsiblity Principle(SRP)`. We also inject the `db` connection 
 dependency so that we can have the connection when we initialize the repository.
 
